@@ -1,0 +1,112 @@
+<style lang="less">
+  .header {
+    width: 750rpx;
+    height: 340rpx;
+  }
+  .video {
+    width: 750rpx;
+    height: 164rpx;
+    margin: 16rpx 28rpx;
+    display: flex;
+  }
+  .video > view {
+    display: inline-block;
+  }
+  .thumbnail {
+    width: 291rpx;
+    height: 100%;
+    background-color: darkred;
+  }
+  .info {
+    width: 373rpx;
+    height: 100%;
+    margin-left: 30rpx;
+    display: flex;
+    flex-direction: column;
+  }
+  .info > text{
+    display: block;
+  }
+</style>
+<template>
+  <view class="container">
+    <image class="header" mode="top left" src="../assets/basic.jpg" />
+    <block wx:key="caption" wx:for="{{playlist}}" wx:for-item="section">
+      <view class="zan-panel-title" >{{section.caption}}</view>
+      <view class="zan-panel">
+        <view class="video" wx:key="id" wx:for="{{section.videos}}" wx:for-item="video">
+          <video id="{{video.id}}" @play="bindplay" @ended="bindended" class="thumbnail" src="{{video.url}}" poster="{{video.cover}}" controls/>
+          <view class="info">
+            <text class="zan-font-14">{{video.caption}}</text>
+            <text class="zan-font-12 zan-c-gray">{{video.date}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  export default class Playlist extends wepy.page {
+    onLoad(queries) {
+      console.log(queries)
+      wepy.setNavigationBarTitle({
+        title: queries.id
+      })
+    }
+
+    data = {
+      playlist: []
+    }
+
+    onReady() {
+      setTimeout(() => {
+        this.playlist = [{
+          caption: 'FS180',
+          videos: [{
+            id: 'abc123',
+            url: 'http://192.168.2.102:8080/output.mp4',
+            cover: 'http://192.168.2.102:8080/output.jpg',
+            caption: 'Solving the Expert LOCKPICK Puzzle!!',
+            date: '2018-01-05'
+          }, {
+            id: 'abc125',
+            url: 'http://192.168.2.102:8080/output.mp4',
+            cover: 'http://192.168.2.102:8080/output.jpg',
+            caption: 'Solving the Expert LOCKPICK Puzzle!!',
+            date: '2018-01-05'
+          }]
+        }, {
+          caption: 'BS180',
+          videos: [{
+            id: 'abc124',
+            url: 'http://192.168.2.102:8080/output.mp4',
+            cover: 'http://192.168.2.102:8080/output.jpg',
+            caption: 'Solving the Expert LOCKPICK Puzzle!!',
+            date: '2018-01-05'
+          }]
+        }]
+        this.videos = this.playlist.map(section => {
+          return section.videos.map(video => {
+            const videoContext = wepy.createVideoContext(video.id)
+            return {
+              [video.id]: videoContext
+            }
+          })
+        })
+        this.$apply()
+      }, 3000)
+    }
+
+    methods = {
+      bindplay: function(e) {
+        console.log('bindplay', e)
+        // console.log(this.videoContext.requestFullScreen())
+      },
+      bindended: function(e) {
+        console.log('bindend')
+        // this.videoContext.exitFullScreen()
+      }
+    }
+  }
+</script>

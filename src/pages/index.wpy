@@ -1,0 +1,154 @@
+<style lang="less">
+  .playlist {
+    width: 100%;
+    height: 340rpx;
+    margin-top: 28rpx;
+    display: flex;
+  }
+  .playlist > .title {
+    font-size: 80rpx;
+    color: white;
+    align-self: flex-end;
+    padding-left:50rpx;
+  }
+  .playlist > .bg {
+    position: absolute;
+    width: 750rpx;
+    height: 340rpx;
+    z-index: -1;
+  }
+  .label{
+    margin: 28rpx;
+  }
+  .latest_videos{
+    position:relative;
+    white-space: nowrap;
+    height: 315rpx;
+    width: 100%;
+    margin-bottom: 28rpx;
+    padding-bottom: 28rpx;
+  }
+  .video_info{
+    display: inline-block;
+    width: 275rpx;
+    white-space: pre-wrap;
+    margin: 28rpx 0 28rpx 28rpx;
+  }
+  .video_info > .thumbnail {
+    width: 275rpx;
+    height: 163rpx;
+    margin-bottom: 16rpx;
+  }
+  .video_info > text {
+    font-size: 8pt;
+    display: block;
+  }
+  .video_info > .date {
+    color: grey;
+  }
+</style>
+<template>
+  <view>
+    <view style="position:relative;">
+      <text class="label">最近更新</text>
+      <view class="zan-arrow" />
+    </view>
+    <view class="latest_videos zan-hairline--bottom" scroll-x="true">
+      <view class="video_info" wx:for="{{latest}}" wx:for-item="video" wx:key="id">
+        <video id="{{video.id}}" class="thumbnail" src="{{video.url}}" poster="{{video.cover}}" controls/>
+        <text>{{video.caption}}</text>
+        <text class="date">{{video.date}}</text>
+      </view>
+    </view>
+    <text class="label">分类视频</text>
+    <view @tap="tapPlaylist('basic')" class="playlist">
+      <image class="bg" mode="top left" src="../assets/basic.jpg" />
+      <text class="title">基础知识</text>
+    </view>
+    <view @tap="tapPlaylist('novice')" class="playlist">
+      <image class="bg" mode="top left" src="../assets/novice.jpg" />
+      <text class="title">初级</text>
+    </view>
+    <view @tap="tapPlaylist('intermediate')" class="playlist">
+      <image class="bg" mode="top left" src="../assets/intermediate.jpg" />
+      <text class="title">中级</text>
+    </view>
+    <view @tap="tapPlaylist('advanced')" class="playlist">
+      <image class="bg" mode="top left" src="../assets/advanced.jpg" />
+      <text class="title">高级</text>
+    </view>
+    <view @tap="tapPlaylist('gear')" class="playlist">
+      <image class="bg" mode="top left" src="../assets/gear.jpg" />
+      <text class="title">装备</text>
+    </view>
+    <view @tap="tapPlaylist('other')" class="playlist">
+      <image class="bg" mode="top left" src="../assets/profession.jpg" />
+      <text class="title">大神视频</text>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import query from '../mixins/query'
+  import testQuery from '../queries/test'
+
+  export default class Index extends wepy.page {
+    methods = {
+      tapPlaylist(playlist, e) {
+        wepy.navigateTo({
+          url: `playlist?id=${playlist}`
+        })
+      }
+    }
+
+    data = {
+      latest: []
+    }
+
+    mixins = [query(testQuery)]
+
+    onReady() {
+      setTimeout(() => {
+        this.latest = [{
+          id: 'abc123',
+          url: 'http://192.168.2.102:8080/output.mp4',
+          cover: 'http://192.168.2.102:8080/output.jpg',
+          caption: 'Solving the Expert LOCKPICK Puzzle!!',
+          date: '2018-01-05'
+        }, {
+          id: 'abc125',
+          url: 'http://192.168.2.102:8080/output.mp4',
+          cover: 'http://192.168.2.102:8080/output.jpg',
+          caption: 'Solving the Expert LOCKPICK Puzzle!!',
+          date: '2018-01-05'
+        }, {
+          id: 'abc126',
+          url: 'http://192.168.2.102:8080/output.mp4',
+          cover: 'http://192.168.2.102:8080/output.jpg',
+          caption: 'Solving the Expert LOCKPICK Puzzle!!',
+          date: '2018-01-05'
+        }, {
+          id: 'abc127',
+          url: 'http://192.168.2.102:8080/output.mp4',
+          cover: 'http://192.168.2.102:8080/output.jpg',
+          caption: 'Solving the Expert LOCKPICK Puzzle!!',
+          date: '2018-01-05'
+        }, {
+          id: 'abc128',
+          url: 'http://192.168.2.102:8080/output.mp4',
+          cover: 'http://192.168.2.102:8080/output.jpg',
+          caption: 'Solving the Expert LOCKPICK Puzzle!!',
+          date: '2018-01-05'
+        }]
+
+        this.videos = this.latest.map(video => {
+          const videoContext = wepy.createVideoContext(video.id)
+          return {
+            [video.id]: videoContext
+          }
+        })
+        this.$apply()
+      }, 3000)
+    }
+  }
+</script>
